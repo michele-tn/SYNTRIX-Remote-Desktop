@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en" data-type="software">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="page-type" content="software">
+<meta name="site-kind" content="software">
+<meta name="theme-color" content="#0b1218">
+<meta name="description" content="SYNTRIX Remote is a portable remote desktop app for Windows x64, based on RustDesk. Download release 1.5.3 and verify it with SHA3-256.">
+<meta property="og:title" content="SYNTRIX Remote — Remote desktop for Windows">
+<meta property="og:description" content="Remote desktop control, support and file transfer from a portable Windows app.">
+<meta property="og:type" content="website">
+<title>SYNTRIX Remote — Remote desktop for Windows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+CiAgPHRpdGxlPlNZTlRSSVggUmVtb3RlPC90aXRsZT4KICA8cG9seWdvbiBmaWxsPSIjMTExRDMzIiBwb2ludHM9IjMsMCAxMywwIDE2LDMgMTYsMTMgMTMsMTYgMywxNiAwLDEzIDAsMyIvPgogIDxwb2x5Z29uIGZpbGw9IiM2NkM3RkYiIHBvaW50cz0iMyw1IDUsMyAxMiwzIDEyLDcgOSw3IDksNSA2LDUgNCw3IDMsNyIvPgogIDxwb2x5Z29uIGZpbGw9IiNGRkZGRkYiIHBvaW50cz0iMTMsMTEgMTEsMTMgNCwxMyA0LDkgNyw5IDcsMTEgMTAsMTEgMTIsOSAxMyw5Ii8+Cjwvc3ZnPgo=" type="image/svg+xml">
+<style>
+:root{color-scheme:dark;--bg:#0b1218;--panel:#101b22;--dim:#aabac5;--ink:#f0f7f9;--mint:#a5ffd9;--line:#2b3d46;--mono:"IBM Plex Mono",monospace;--gutter:clamp(20px,5vw,76px)}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.55 "Instrument Sans",system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--mint);outline-offset:4px}
+.wrap{width:min(100% - var(--gutter)*2,1320px);margin-inline:auto}
+.skip{position:absolute;z-index:5;top:8px;left:8px;padding:12px;background:var(--mint);color:var(--bg);transform:translateY(-140%)}
+.skip:focus{transform:none}
+header{border-bottom:1px solid var(--line)}
+.nav{display:flex;gap:24px;align-items:center;justify-content:space-between;min-height:76px}
+.brand{display:inline-flex;align-items:center;gap:11px;min-height:44px;font-weight:700;letter-spacing:.12em}
+.brand img{width:30px;height:30px}
+.nav nav{display:flex;align-items:center;gap:clamp(14px,3vw,40px)}
+.nav nav a,.footer a{display:inline-flex;align-items:center;min-height:44px;color:var(--dim);transition:color .2s}
+.nav nav a:hover,.footer a:hover{color:var(--mint)}
+.hero{min-height:calc(100svh - 77px);display:grid;align-items:center;padding-block:clamp(54px,9vh,130px);position:relative;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 75% 50%,#123a3d 0%,transparent 60%),linear-gradient(#79ffd308 1px,transparent 1px),linear-gradient(90deg,#79ffd308 1px,transparent 1px);background-size:auto,44px 44px,44px 44px;mask-image:linear-gradient(black 82%,transparent)}
+.hero-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,84px);align-items:center}
+.eyebrow,.terminal-label,.checksum small{font:500 .75rem/1.5 var(--mono);letter-spacing:.11em;text-transform:uppercase}
+.eyebrow{color:var(--mint);margin:0 0 16px}
+h1,h2,h3,p{margin-top:0}
+h1,h2{letter-spacing:-.065em;line-height:.98;text-wrap:balance}
+h1{font-size:clamp(3.2rem,6vw,6.35rem);margin-bottom:24px}
+h2{font-size:clamp(2.8rem,5.6vw,5.5rem);margin-bottom:22px}
+h3{font-size:1.4rem;margin-bottom:9px;letter-spacing:-.025em}
+.intro{max-width:36ch;font-size:clamp(1rem,1.45vw,1.22rem);color:var(--dim);margin-bottom:30px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:0 18px;border:1px solid var(--line);border-radius:6px;font-weight:700;background:transparent;transition:transform .18s,background .18s,border-color .18s}
+.button:hover{transform:translateY(-2px);border-color:var(--mint)}
+.button:active{transform:translateY(1px)}
+.primary{background:var(--mint);border-color:var(--mint);color:#07221a}
+.primary:hover{background:#c8ffea}
+.frame{background:#101b22;border:1px solid #3a5b61;border-radius:12px;overflow:hidden;box-shadow:0 30px 85px #0008}
+.windowbar{height:49px;display:flex;align-items:center;gap:10px;padding-inline:15px;border-bottom:1px solid var(--line);font-size:.85rem;font-weight:600}
+.windowbar img{width:23px;height:23px}
+.windowbar .demo-label{margin-left:auto;color:var(--dim);font:400 .7rem var(--mono)}
+.windowgrid{display:grid;grid-template-columns:.72fr 1.28fr;min-height:300px}
+.your-desktop{background:#0b151c;border-right:1px solid var(--line);padding:22px 16px}
+.your-desktop strong{display:block;margin-bottom:28px}
+.terminal-label{display:block;color:var(--dim);margin-bottom:6px}
+.local-id{display:block;font:500 clamp(.8rem,1.5vw,1.25rem) var(--mono);margin-bottom:25px}
+.workspace{padding:22px 17px;min-width:0}
+.workspace .control-heading{font-size:1rem;font-weight:700;margin-bottom:9px}
+.demo-field{border:1px solid var(--line);border-radius:6px;padding:10px;margin-bottom:12px;color:var(--dim);font:.85rem var(--mono)}
+.demo-control{min-height:44px;padding:0 12px}
+.signal{height:55px;margin-top:10px;position:relative;display:grid;grid-template-columns:15px 1fr 15px;align-items:center;gap:8px}
+.signal b{border:1px solid #6f9c98;border-radius:50%;aspect-ratio:1}
+.signal span{height:1px;background:#40615f;position:relative}
+.signal span::after{content:"";display:block;width:8px;height:8px;background:var(--mint);border-radius:50%;position:absolute;top:-3px;left:0;opacity:0;box-shadow:0 0 16px var(--mint)}
+.signal.sending span::after{animation:route .65s ease-out}
+.signal.connected b{background:var(--mint);border-color:var(--mint)}
+@keyframes route{0%{opacity:1;left:0}100%{opacity:1;left:calc(100% - 8px)}}
+.demo-status{color:var(--mint);font:.8rem/1.45 var(--mono);min-height:2.9em;margin:0}
+.features,.downloads{border-top:1px solid var(--line);min-height:100svh;display:grid;align-items:center;padding-block:clamp(60px,10vh,120px)}
+.features{background:#111c23}
+.workflow{height:350svh;border-top:1px solid var(--line);background:#0e1920}
+.workflow-view{position:sticky;top:0;min-height:100svh;display:grid;align-items:center;padding-block:clamp(22px,6vh,76px)}
+.workflow-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:clamp(24px,5vw,80px);align-items:center}
+.workflow h2{font-size:clamp(2.15rem,5vw,4.8rem)}
+.workflow-steps{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.workflow-steps li{border-bottom:1px solid var(--line);padding:10px 0 10px 12px;border-left:2px solid transparent;color:var(--dim);transition:border-color .25s}
+.workflow-steps strong{display:block;color:var(--ink)}
+.workflow[data-phase="connect"] li:nth-child(1),.workflow[data-phase="session"] li:nth-child(2),.workflow[data-phase="files"] li:nth-child(3){border-left-color:var(--mint)}
+.workflow-preview{overflow:hidden;background:#0b151c;border:1px solid #3a5b61;border-radius:12px;box-shadow:0 20px 65px #0006}
+.workflow-preview .windowbar{color:var(--mint)}
+.workflow-scenes{display:grid;overflow:hidden;background:radial-gradient(ellipse at center,#153635,#0a171e)}
+.workflow-screen{grid-area:1/1;padding:clamp(10px,3vw,30px);transform:translate3d(var(--pan-x,0%),var(--pan-y,0%),0) scale(var(--scale,1));opacity:var(--opacity,1)}
+.workflow-screen.session,.workflow-screen.files{--opacity:0}
+.connect-panel{min-height:clamp(136px,28vw,330px);display:grid;align-content:center;gap:10px;padding:clamp(12px,4vw,38px);background:#101b22;border:1px solid #416268;border-radius:7px}
+.connect-panel .demo-field{margin:0;box-shadow:0 0 18px #a5ffd925}
+.connect-panel .button{justify-self:end;min-height:38px;font-size:.82rem;pointer-events:none}
+.workflow-caption{min-height:38px;display:flex;align-items:center;padding:4px 15px;color:var(--dim);font:.72rem var(--mono)}
+.workflow-caption::before{content:"";width:6px;height:6px;margin-right:9px;border-radius:50%;background:var(--mint)}
+.desk,.file-panes{min-height:clamp(136px,28vw,330px);border:1px solid #416268;border-radius:7px;overflow:hidden}
+.desk{display:grid;place-items:center;background:radial-gradient(ellipse at 65% 30%,#24635e,#12272e 70%)}
+.desk-window{width:72%;padding:clamp(10px,2vw,21px);background:#101b22;border:1px solid #547475;border-radius:6px;box-shadow:0 16px 28px #0005}
+.desk-window strong,.file-panes strong{display:block;margin-bottom:6px}
+.desk-window small,.file-panes small{color:var(--dim)}
+.desk-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;color:var(--dim);border-top:1px solid var(--line);margin-top:12px;padding-top:8px;font:.7rem var(--mono)}
+.focus-action{position:relative;padding:5px 7px;background:#223c3d;color:var(--mint);border-radius:4px;white-space:nowrap}
+.focus-action::after{content:"";position:absolute;inset:-4px;border:1px solid var(--mint);border-radius:7px;opacity:var(--focus,0);box-shadow:0 0 18px #a5ffd94d}
+.file-panes{display:grid;grid-template-columns:1fr 1fr;background:#101b22}
+.file-panes>div{min-width:0;padding:clamp(9px,2vw,20px)}
+.file-panes>div+div{border-left:1px solid var(--line)}
+.file-name{display:block;margin-top:24px;padding:6px;border-top:1px solid var(--line);overflow-wrap:anywhere;font:.73rem var(--mono)}
+.file-panes>div:last-child .file-name{color:var(--mint);opacity:var(--received,1)}
+.transfer-meter{height:3px;background:var(--line)}
+.transfer-meter span{display:block;width:100%;height:100%;background:var(--mint);transform:scaleX(var(--transfer,0));transform-origin:left}
+.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--line);margin-top:clamp(32px,6vw,75px)}
+.feature{padding:29px 23px 32px 0}
+.feature+.feature{border-left:1px solid var(--line);padding-left:23px}
+.feature p,.release-copy,.checksum small{color:var(--dim)}
+.feature p{margin-bottom:0;max-width:33ch}
+.feature svg{width:52px;height:52px;margin-bottom:20px;color:var(--mint);fill:none;stroke:currentColor;stroke-width:1.6}
+.release-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:clamp(30px,6vw,90px);align-items:start}
+.release-copy{max-width:34ch;margin-bottom:27px}
+.file-list{border-top:1px solid var(--line)}
+.file-row{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:76px;border-bottom:1px solid var(--line);padding:10px 4px 10px 0;transition:color .2s,padding .2s}
+.file-row:hover{padding-left:8px;color:var(--mint)}
+.file-row strong,.file-row small{display:block}
+.file-row small{color:var(--dim)}
+.file-row .arrow{color:var(--mint);font-size:1.35rem}
+details{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;display:list-item;padding:16px 0;min-height:52px;font-weight:700}
+summary::marker{color:var(--mint)}
+.checksum{margin-bottom:12px;border:1px solid var(--line);border-radius:6px;padding:12px}
+.checksum code{display:block;overflow-wrap:anywhere;font:400 .82rem/1.5 var(--mono);margin:.35rem 0}
+.checksum .button{min-height:44px}
+.copy-status{color:var(--mint);min-height:1.6em;margin:0 0 10px}
+.footer{border-top:1px solid var(--line);padding-block:18px;color:var(--dim)}
+.footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+[data-enter]{animation:enter .7s ease-out both}
+.frame[data-enter]{animation-delay:.12s}
+@keyframes enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(max-width:880px){.hero-grid,.release-grid{grid-template-columns:1fr}.hero-grid{gap:36px}.hero{padding-block:44px}.frame{max-width:690px}.windowgrid{min-height:0}}
+@media(max-width:560px){.nav{gap:8px;min-height:66px}.nav nav{gap:12px}.nav nav a{font-size:.85rem}.brand{letter-spacing:.05em;font-size:.94rem;gap:6px}.brand img{width:24px;height:24px}.hero{min-height:calc(100svh - 67px)}.actions .button{width:100%}.windowgrid{grid-template-columns:1fr}.your-desktop{display:none}.workspace{padding:15px}.feature-grid{grid-template-columns:1fr}.feature,.feature+.feature{padding:22px 0;border-left:0}.feature+.feature{border-top:1px solid var(--line)}.feature svg{width:38px;height:38px;margin-bottom:9px}}
+@media(max-width:760px){.workflow{height:310svh}.workflow-grid{grid-template-columns:1fr;gap:16px}.workflow h2{margin-bottom:14px}.workflow-steps li{font-size:.9rem}.workflow-view{padding-block:18px}}
+@media(max-height:660px),(prefers-reduced-motion:reduce){.workflow{height:auto}.workflow-view{position:relative;min-height:0;padding-block:44px}.workflow-screen,.workflow-screen.session,.workflow-screen.files{grid-area:auto;transform:none;opacity:1}.transfer-meter span{transform:none}.file-panes>div:last-child .file-name{opacity:1}.workflow-caption{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+</head>
+<body id="top">
+<a class="skip" href="#main">Skip to content</a>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+CiAgPHRpdGxlPlNZTlRSSVggUmVtb3RlPC90aXRsZT4KICA8cG9seWdvbiBmaWxsPSIjMTExRDMzIiBwb2ludHM9IjMsMCAxMywwIDE2LDMgMTYsMTMgMTMsMTYgMywxNiAwLDEzIDAsMyIvPgogIDxwb2x5Z29uIGZpbGw9IiM2NkM3RkYiIHBvaW50cz0iMyw1IDUsMyAxMiwzIDEyLDcgOSw3IDksNSA2LDUgNCw3IDMsNyIvPgogIDxwb2x5Z29uIGZpbGw9IiNGRkZGRkYiIHBvaW50cz0iMTMsMTEgMTEsMTMgNCwxMyA0LDkgNyw5IDcsMTEgMTAsMTEgMTIsOSAxMyw5Ii8+Cjwvc3ZnPgo=" alt=""> SYNTRIX</a>
+    <nav aria-label="Main navigation"><a href="#features">Features</a><a href="#download">Download</a></nav>
+  </div>
+</header>
+<main id="main">
+  <section class="hero" aria-labelledby="title">
+    <div class="wrap hero-grid">
+      <div data-enter>
+        <p class="eyebrow">Release 1.5.3 · Windows x64</p>
+        <h1 id="title">Your desktop, from anywhere.</h1>
+        <p class="intro">SYNTRIX Remote is a portable Windows app for accessing another computer, providing support and transferring files. Based on RustDesk.</p>
+        <div class="actions">
+          <a class="button primary" href="https://raw.githubusercontent.com/michele-tn/SYNTRIX-Remote-Desktop/main/release/SYNTRIX-1.5.3-x64-portable.exe" download>Download EXE <span aria-hidden="true">↓</span></a>
+          <a class="button" href="#download">View release files <span aria-hidden="true">↘</span></a>
+        </div>
+      </div>
+      <div class="frame" data-enter aria-label="SYNTRIX interface demo">
+        <div class="windowbar"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+CiAgPHRpdGxlPlNZTlRSSVggUmVtb3RlPC90aXRsZT4KICA8cG9seWdvbiBmaWxsPSIjMTExRDMzIiBwb2ludHM9IjMsMCAxMywwIDE2LDMgMTYsMTMgMTMsMTYgMywxNiAwLDEzIDAsMyIvPgogIDxwb2x5Z29uIGZpbGw9IiM2NkM3RkYiIHBvaW50cz0iMyw1IDUsMyAxMiwzIDEyLDcgOSw3IDksNSA2LDUgNCw3IDMsNyIvPgogIDxwb2x5Z29uIGZpbGw9IiNGRkZGRkYiIHBvaW50cz0iMTMsMTEgMTEsMTMgNCwxMyA0LDkgNyw5IDcsMTEgMTAsMTEgMTIsOSAxMyw5Ii8+Cjwvc3ZnPgo=" alt=""><span>SYNTRIX Remote</span><span class="demo-label">Interactive demo</span></div>
+        <div class="windowgrid">
+          <div class="your-desktop">
+            <strong>This desktop</strong>
+            <span class="terminal-label">Demo ID</span><span class="local-id">000 000 000</span>
+            <span class="terminal-label">Session</span><span>Waiting</span>
+          </div>
+          <div class="workspace">
+            <p class="control-heading">Control a remote desktop</p>
+            <div class="demo-field">Example desktop</div>
+            <button class="button primary demo-control" type="button" id="simulate">Simulate connection</button>
+            <div class="signal" aria-hidden="true"><b></b><span></span><b></b></div>
+            <p class="demo-status" role="status" id="demo-status">This demo runs in your browser.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="workflow" aria-labelledby="workflow-title" data-phase="connect">
+    <div class="workflow-view">
+      <div class="wrap workflow-grid">
+        <div>
+          <p class="eyebrow">Workflow preview</p>
+          <h2 id="workflow-title">From remote access to file transfer.</h2>
+          <ol class="workflow-steps">
+            <li><strong>Connect to an authorized computer</strong>Enter the remote ID and open a session.</li>
+            <li><strong>Work on the remote desktop</strong>Use its applications with your mouse and keyboard.</li>
+            <li><strong>Send a file</strong>Choose a local file and a destination on the remote computer.</li>
+          </ol>
+        </div>
+        <div class="workflow-preview" aria-hidden="true">
+          <div class="windowbar">SYNTRIX Remote<span class="demo-label">Simulated workflow</span></div>
+          <div class="workflow-scenes">
+            <div class="workflow-screen connect">
+              <div class="connect-panel">
+                <strong>Control a remote desktop</strong>
+                <span class="terminal-label">Example remote ID</span>
+                <span class="demo-field">000 000 000</span>
+                <span class="button primary">Connect ↗</span>
+              </div>
+            </div>
+            <div class="workflow-screen session">
+              <div class="desk"><div class="desk-window">
+                <strong>Remote desktop</strong><small>Session connected</small>
+                <div class="desk-actions"><span>Session tools</span><span class="focus-action">File transfer ↗</span></div>
+              </div></div>
+            </div>
+            <div class="workflow-screen files">
+              <div class="file-panes">
+                <div><strong>Local</strong><small>Documents</small><span class="file-name">support-notes.txt</span></div>
+                <div><strong>Remote</strong><small>Documents</small><span class="file-name">support-notes.txt</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="workflow-caption">Enter the remote ID</div>
+          <div class="transfer-meter"><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="features" id="features" aria-labelledby="features-heading">
+    <div class="wrap">
+      <h2 id="features-heading">Work on a remote desktop.</h2>
+      <div class="feature-grid">
+        <article class="feature">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="30" height="23" rx="2"/><path d="M19 31v7m-8 0h16m9-15h8m-4-4 4 4-4 4"/></svg>
+          <h3>Remote control</h3><p>Connect to an authorized computer and use your mouse and keyboard to work on its desktop.</p>
+        </article>
+        <article class="feature">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 15h12l4 4h17v19H4zM11 11h27v4m-12 12h16m-4-4 4 4-4 4"/></svg>
+          <h3>File transfer</h3><p>Send and retrieve documents between computers during a support session.</p>
+        </article>
+        <article class="feature">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="19" width="30" height="22" rx="3"/><path d="M16 19v-6a8 8 0 0 1 16 0v6m-8 9v6"/><circle cx="24" cy="28" r="2"/></svg>
+          <h3>Session management</h3><p>Choose whether the Windows Connection Manager is visible while idle. Active sessions and approval requests remain available.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+  <section class="downloads" id="download" aria-labelledby="download-heading">
+    <div class="wrap release-grid">
+      <div>
+        <p class="eyebrow">Windows x64</p>
+        <h2 id="download-heading">Download SYNTRIX Remote.</h2>
+        <p class="release-copy">Run the portable EXE or extract it from the ZIP. Compare the SHA3-256 checksum to verify your download.</p>
+        <a class="button" href="https://github.com/michele-tn/SYNTRIX-Remote-Desktop/tree/main/release">Browse release files on GitHub ↗</a>
+      </div>
+      <div class="file-list">
+        <a class="file-row" href="https://raw.githubusercontent.com/michele-tn/SYNTRIX-Remote-Desktop/main/release/SYNTRIX-1.5.3-x64-portable.exe" download><span><strong>Download portable EXE</strong><small>1.5.3 · 27.9 MB</small></span><span class="arrow" aria-hidden="true">↓</span></a>
+        <a class="file-row" href="https://raw.githubusercontent.com/michele-tn/SYNTRIX-Remote-Desktop/main/release/SYNTRIX-1.5.3-x64-portable.zip" download><span><strong>Download ZIP</strong><small>1.5.3 · 27.5 MB</small></span><span class="arrow" aria-hidden="true">↓</span></a>
+        <details>
+          <summary>Checksum SHA3-256</summary>
+          <div class="checksum">
+            <small>Portable EXE</small>
+            <code id="hash-exe">a212bd185c6e3fcdf917beccce7b1659ec208c828c2494644e888954b08c25a0</code>
+            <div class="actions"><button type="button" class="button" data-copy="hash-exe" aria-label="Copy EXE checksum">Copy</button><a class="button" href="https://raw.githubusercontent.com/michele-tn/SYNTRIX-Remote-Desktop/main/release/SYNTRIX-1.5.3-x64-portable.exe.sha3-256" download data-checksum>Download EXE checksum</a></div>
+          </div>
+          <div class="checksum">
+            <small>ZIP archive</small>
+            <code id="hash-zip">881698fb10ff6bb7199119cd0859a9a86cb588f979dcf993507c7ec27e5e639e</code>
+            <div class="actions"><button type="button" class="button" data-copy="hash-zip" aria-label="Copy ZIP checksum">Copy</button><a class="button" href="https://raw.githubusercontent.com/michele-tn/SYNTRIX-Remote-Desktop/main/release/SYNTRIX-1.5.3-x64-portable.zip.sha3-256" download data-checksum>Download ZIP checksum</a></div>
+          </div>
+          <p class="copy-status" id="copy-status" role="status"></p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="wrap"><span>SYNTRIX Remote · Based on RustDesk</span><a href="https://github.com/michele-tn/SYNTRIX-Remote-Desktop/blob/main/LICENCE">Project license ↗</a></div></footer>
+<script>
+const simulation = document.querySelector('#simulate');
+const status = document.querySelector('#demo-status');
+const signal = document.querySelector('.signal');
+let state = 'idle';
+simulation.addEventListener('click', () => {
+  if (state === 'sending') return;
+  if (state === 'connected') {
+    state = 'idle';
+    signal.classList.remove('connected');
+    simulation.textContent = 'Simulate connection';
+    status.textContent = 'This demo runs in your browser.';
+    return;
+  }
+  state = 'sending';
+  status.textContent = 'Connecting in the demo…';
+  signal.classList.add('sending');
+  const complete = () => {
+    state = 'connected';
+    signal.classList.remove('sending');
+    signal.classList.add('connected');
+    status.textContent = 'Simulated session is active.';
+    simulation.textContent = 'End simulation';
+  };
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) complete();
+  else setTimeout(complete, 650);
+});
+
+const copyStatus = document.querySelector('#copy-status');
+document.querySelectorAll('[data-copy]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const code = document.getElementById(button.dataset.copy);
+    try {
+      await navigator.clipboard.writeText(code.textContent);
+      copyStatus.textContent = 'Checksum copied.';
+    } catch {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(code);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      copyStatus.textContent = 'Checksum selected. Use your system’s Copy command.';
+    }
+  });
+});
+
+document.querySelectorAll('[data-checksum]').forEach((link) => {
+  link.addEventListener('click', async (event) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    try {
+      const response = await fetch(link.href);
+      if (!response.ok) throw new Error('Checksum unavailable');
+      const url = URL.createObjectURL(await response.blob());
+      const download = document.createElement('a');
+      download.href = url;
+      download.download = new URL(link.href).pathname.split('/').pop();
+      download.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch {
+      window.location.assign(link.href);
+    }
+  });
+});
+
+const staticWorkflow = matchMedia('(max-height: 660px), (prefers-reduced-motion: reduce)');
+const workflow = document.querySelector('.workflow');
+const workflowView = workflow.querySelector('.workflow-view');
+const scenes = [...workflow.querySelectorAll('.workflow-screen')];
+const [connectScene, sessionScene, fileScene] = scenes;
+const transferMeter = workflow.querySelector('.transfer-meter');
+const caption = workflow.querySelector('.workflow-caption');
+const clamp = (value) => Math.max(0, Math.min(1, value));
+const ease = (value) => {
+  const t = clamp(value);
+  return t * t * (3 - 2 * t);
+};
+const cameraStops = [
+  [[0,1,0,0],[.105,1.42,0,-4],[.21,1.62,-15,-13],[.35,1.78,-18,-15]],
+  [[.25,1.16,3,1],[.39,1,0,0],[.51,1.55,-14,-10],[.64,1.72,-19,-11]],
+  [[.54,1.16,12,-4],[.67,1.39,24,-8],[.79,1.35,-23,-8],[.90,1.32,-23,-8],[1,1,0,0]]
+];
+const captions = [
+  [0,'Enter the remote ID'], [.13,'Open the connection'],
+  [.30,'Work inside the remote session'], [.46,'Open File transfer'],
+  [.59,'Choose the local file'], [.74,'Send it to the remote computer'],
+  [.91,'File received']
+];
+const ramp = (p, from, to) => ease((p - from) / (to - from));
+function setCamera(scene, stops, progress, opacity) {
+  const next = stops.findIndex(([point]) => point > progress);
+  const end = stops[next < 0 ? stops.length - 1 : next];
+  const start = stops[next <= 0 ? (next < 0 ? stops.length - 1 : 0) : next - 1];
+  const amount = start === end ? 0 : ramp(progress, start[0], end[0]);
+  const interpolate = (i) => start[i] + (end[i] - start[i]) * amount;
+  scene.style.setProperty('--scale', interpolate(1));
+  scene.style.setProperty('--pan-x', interpolate(2) + '%');
+  scene.style.setProperty('--pan-y', interpolate(3) + '%');
+  scene.style.setProperty('--opacity', opacity);
+}
+let zoomFrame = 0;
+let progress = 0;
+let target = 0;
+let lastTime = 0;
+function drawZoom(time) {
+  zoomFrame = 0;
+  if (staticWorkflow.matches) return;
+  const elapsed = lastTime ? Math.min(48, time - lastTime) : 16;
+  lastTime = time;
+  progress += (target - progress) * (1 - Math.exp(-elapsed / 86));
+  if (Math.abs(target - progress) < .0006) progress = target;
+  const nextScene = ramp(progress, .245, .355);
+  const showFiles = ramp(progress, .535, .645);
+  const transfer = ramp(progress, .705, .905);
+  setCamera(connectScene, cameraStops[0], progress, 1 - nextScene);
+  setCamera(sessionScene, cameraStops[1], progress, nextScene * (1 - showFiles));
+  setCamera(fileScene, cameraStops[2], progress, showFiles);
+  sessionScene.style.setProperty('--focus', ramp(progress, .39, .50));
+  fileScene.style.setProperty('--received', ramp(transfer, .76, 1));
+  transferMeter.style.setProperty('--transfer', transfer);
+  const phase = showFiles >= .5 ? 'files' : nextScene >= .5 ? 'session' : 'connect';
+  if (workflow.dataset.phase !== phase) workflow.dataset.phase = phase;
+  const label = captions.findLast(([point]) => progress >= point)[1];
+  if (caption.textContent !== label) caption.textContent = label;
+  if (progress !== target) zoomFrame = requestAnimationFrame(drawZoom);
+  else lastTime = 0;
+}
+function queueZoom() {
+  if (staticWorkflow.matches) return;
+  const travel = Math.max(1, workflow.offsetHeight - workflowView.offsetHeight);
+  const next = clamp(-workflow.getBoundingClientRect().top / travel);
+  if (next !== target) target = next;
+  if (!zoomFrame && target !== progress) zoomFrame = requestAnimationFrame(drawZoom);
+}
+addEventListener('scroll', queueZoom, {passive:true});
+addEventListener('resize', queueZoom, {passive:true});
+staticWorkflow.addEventListener('change', queueZoom);
+queueZoom();
+</script>
+</body>
+</html>
