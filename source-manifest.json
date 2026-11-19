@@ -1,7 +1,10 @@
 {
-  "upstream": "95cca3f661f635b3cc85c04935fe8d96d8f432ef",
-  "patchedTree": "481fb6795074c5f85db5e666d6ed4520607bb637",
-  "hbbCommon": "fae47e024dd83cef6aaecde0aa7d11731df11649",
-  "rootFiles": 1109,
-  "submoduleFiles": 33
+  "schema": 2,
+  "upstream": "rustdesk/rustdesk",
+  "baseCommit": "95cca3f661f635b3cc85c04935fe8d96d8f432ef",
+  "patch": "maintenance/syntrix.patch",
+  "patchSha256": "09cf82aa8ced529dfd30d6ade1b0115ad4b04f304e261e2f31a8dfc09354d8ed",
+  "latestVerifiedRelease": "release/latest.json",
+  "sourceSnapshot": "source",
+  "note": "Snapshot personalizzato della baseline; gli aggiornamenti usano checkout isolati."
 }

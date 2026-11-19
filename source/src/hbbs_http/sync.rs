@@ -1,8 +1,4 @@
-use std::{
-    collections::HashMap,
-    sync::{Arc, Mutex},
-    time::Duration,
-};
+use std::{collections::HashMap, sync::Mutex, time::Duration};
 
 #[cfg(not(any(target_os = "ios")))]
 use crate::{common::API_LOG_INTERVAL, ui_interface::get_builtin_option, Connection};
@@ -22,7 +18,6 @@ const TIME_CONN: Duration = Duration::from_secs(3);
 #[cfg(not(any(target_os = "ios")))]
 lazy_static::lazy_static! {
     static ref SENDER : Mutex<broadcast::Sender<Vec<i32>>> = Mutex::new(start_hbbs_sync());
-    static ref PRO: Arc<Mutex<bool>> = Default::default();
 }
 
 #[cfg(not(any(target_os = "ios")))]
@@ -98,7 +93,6 @@ async fn start_hbbs_sync_async() {
                 let url = heartbeat_url();
                 let id = Config::get_id();
                 if url.is_empty() {
-                    *PRO.lock().unwrap() = false;
                     continue;
                 }
                 if config::option2bool("stop-service", &Config::get_option("stop-service")) {
@@ -107,7 +101,6 @@ async fn start_hbbs_sync_async() {
                 let conns = Connection::alive_conns();
                 if info_uploaded.uploaded && (url != info_uploaded.url || id != info_uploaded.id) {
                     info_uploaded.uploaded = false;
-                    *PRO.lock().unwrap() = false;
                 }
                 // For Windows:
                 // We can't skip uploading sysinfo when the username is empty, because the username may
@@ -193,7 +186,6 @@ async fn start_hbbs_sync_async() {
                             let samever = match crate::post_request(url.replace("heartbeat", "sysinfo_ver"), "".to_owned(), "").await {
                                 Ok(x)  => {
                                     sysinfo_ver = x.clone();
-                                    *PRO.lock().unwrap() = true;
                                     x == ver
                                 }
                                 _ => {
@@ -217,7 +209,6 @@ async fn start_hbbs_sync_async() {
                                     config::Status::set("sysinfo_hash", hash);
                                     config::Status::set("sysinfo_ver", sysinfo_ver.clone());
                                 }
-                                *PRO.lock().unwrap() = true;
                             } else if x == "ID_NOT_FOUND" {
                                 info_uploaded.last_uploaded = None; // next heartbeat will upload sysinfo again
                             } else {
@@ -384,11 +375,6 @@ async fn handle_config_options(
     Ok(())
 }
 
-#[allow(unused)]
-#[cfg(not(any(target_os = "ios")))]
-pub fn is_pro() -> bool {
-    PRO.lock().unwrap().clone()
-}
 
 // Fire-and-forget by design: the switch flow must not block on this POST.
 // If the device clock is outside the server's accepted window, the server

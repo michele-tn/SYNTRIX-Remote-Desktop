@@ -104,6 +104,8 @@ const IPC_TOKEN_RANDOM_BYTES: usize = IPC_TOKEN_LEN / 2;
 #[cfg(target_os = "windows")]
 const _: () = assert!(IPC_TOKEN_LEN % 2 == 0);
 pub static EXIT_RECV_CLOSE: AtomicBool = AtomicBool::new(true);
+#[cfg(windows)]
+static SHOW_ACTIVE_CONNECTIONS: AtomicBool = AtomicBool::new(false);
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 thread_local! {
@@ -997,15 +999,22 @@ async fn handle(data: Data, stream: &mut Connection) {
                     } else {
                         None
                     };
-                } else if cfg!(windows) && name == "syntrix-cm-visible-when-idle" {
-                    value = Some(Config::get_option("syntrix-cm-visible-when-idle"));
-                } else if name == "hide_cm" {
-                    value = if crate::hbbs_http::sync::is_pro() || crate::common::is_custom_client()
+                } else if cfg!(windows) && name == "syntrix-cm-show-active" {
+                    #[cfg(windows)]
                     {
-                        Some(hbb_common::password_security::hide_cm().to_string())
-                    } else {
-                        None
-                    };
+                        let requested = SHOW_ACTIVE_CONNECTIONS.swap(false, Ordering::Relaxed);
+                        value = Some(if requested { "Y" } else { "N" }.to_owned());
+                    }
+                } else if cfg!(windows) && name == "syntrix-cm-hide-on-startup" {
+                    use hbb_common::password_security::{self, ApproveMode};
+                    let hide = password_security::hide_cm()
+                        || (Config::get_option("syntrix-cm-visible-when-idle") != "Y"
+                            && password_security::approve_mode() == ApproveMode::Password
+                            && !password_security::temporary_enabled()
+                            && password_security::has_valid_password());
+                    value = Some(if hide { "Y" } else { "N" }.to_owned());
+                } else if name == "hide_cm" {
+                    value = Some(hbb_common::password_security::hide_cm().to_string());
                 } else if name == "voice-call-input" {
                     value = crate::audio_service::get_voice_call_input_device();
                 } else if name == "unlock-pin" {
@@ -1025,6 +1034,11 @@ async fn handle(data: Data, stream: &mut Connection) {
                     } else {
                         Config::set_key_confirmed(false);
                         Config::set_id(&value);
+                    }
+                } else if cfg!(windows) && name == "syntrix-cm-show-active" {
+                    #[cfg(windows)]
+                    if value == "Y" && !crate::Connection::alive_conns().is_empty() {
+                        SHOW_ACTIVE_CONNECTIONS.store(true, Ordering::Relaxed);
                     }
                 } else if name == "temporary-password" {
                     password::update_temporary_password();

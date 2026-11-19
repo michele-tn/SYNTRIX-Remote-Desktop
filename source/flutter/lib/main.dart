@@ -284,10 +284,11 @@ void runMultiWindow(
 
 void runConnectionManagerScreen() async {
   await initEnv(kAppTypeConnectionManager);
+  if (isWindows) await gFFI.serverModel.updatePasswordModel();
   final hide = isWindows
-      ? await bind.cmGetConfig(name: kOptionCmVisibleWhenIdle) != 'Y'
+      ? gFFI.serverModel.hideCm
       : await bind.cmGetConfig(name: 'hide_cm') == 'true';
-  gFFI.serverModel.hideCm = hide;
+
   _runApp(
     '',
     const DesktopServerPage(),
@@ -295,9 +296,6 @@ void runConnectionManagerScreen() async {
   );
   if (hide) {
     await hideCmWindow(isStartup: true);
-    if (gFFI.serverModel.hasWindowsConnection) {
-      await showCmWindow();
-    }
   } else {
     await showCmWindow(isStartup: true);
   }
@@ -307,8 +305,40 @@ void runConnectionManagerScreen() async {
 }
 
 bool _isCmReadyToShow = false;
+bool _cmLayoutInitialized = false;
+bool? _cmMinimizable;
+Future<void> _windowsCmLayout = Future.value();
 
-showCmWindow({bool isStartup = false}) async {
+Future<void> _showWindowsCm({bool requested = false}) {
+  _windowsCmLayout = _windowsCmLayout.then((_) async {
+    final model = gFFI.serverModel;
+    if (!model.shouldShowCm) return;
+    const minimizable = true;
+    if (_cmMinimizable != minimizable) {
+      await windowManager.setMinimizable(minimizable);
+      _cmMinimizable = minimizable;
+    }
+    if (!_cmLayoutInitialized) {
+      await windowManager.setAlwaysOnTop(true);
+      await windowManager.setSizeAlignment(
+        kConnectionManagerWindowSizeClosedChat,
+        Alignment.topRight,
+      );
+      _cmLayoutInitialized = true;
+    }
+    if (requested && await windowManager.isMinimized()) {
+      await windowManager.restore();
+    }
+    if (!await windowManager.isVisible()) await windowManager.show();
+    if (await windowManager.getOpacity() != 1) await windowManager.setOpacity(1);
+    if (requested) await windowManager.focus();
+  }).catchError((Object error) {
+    debugPrint('Unable to update the Connection Manager layout: $error');
+  });
+  return _windowsCmLayout;
+}
+
+showCmWindow({bool isStartup = false, bool requested = false}) async {
   if (isStartup) {
     WindowOptions windowOptions = getHiddenTitleBarWindowOptions(
         size: kConnectionManagerWindowSizeClosedChat, alwaysOnTop: true);
@@ -324,6 +354,10 @@ showCmWindow({bool isStartup = false}) async {
         kConnectionManagerWindowSizeClosedChat, Alignment.topRight);
     _isCmReadyToShow = true;
   } else if (_isCmReadyToShow) {
+    if (isWindows) {
+      await _showWindowsCm(requested: requested);
+      return;
+    }
     if (await windowManager.getOpacity() != 1) {
       await windowManager.setOpacity(1);
       await windowManager.focus();
@@ -347,7 +381,7 @@ hideCmWindow({bool isStartup = false}) async {
     _isCmReadyToShow = true;
   } else if (_isCmReadyToShow) {
     final opacity = await windowManager.getOpacity();
-    if (opacity != 0 && !gFFI.serverModel.hasWindowsConnection) {
+    if (opacity != 0) {
       await windowManager.setOpacity(0);
       bind.mainHideDock();
       if (!isWindows) await windowManager.minimize();

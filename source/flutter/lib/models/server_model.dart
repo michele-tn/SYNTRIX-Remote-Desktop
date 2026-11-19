@@ -33,7 +33,7 @@ class ServerModel with ChangeNotifier {
   bool _fileOk = false;
   bool _clipboardOk = false;
   bool _showElevation = false;
-  bool hideCm = false;
+  bool _hideCm = false;
   int _connectStatus = 0; // Rendezvous Server status
   String _verificationMethod = "";
   String _temporaryPasswordLength = "";
@@ -50,11 +50,18 @@ class ServerModel with ChangeNotifier {
 
   final List<Client> _clients = [];
 
-  // The idle preference never hides an active session or a pending approval.
   bool get hasWindowsConnection =>
       isWindows && _clients.any((client) => !client.disconnected);
 
-  bool get _shouldShowCm => !hideCm || hasWindowsConnection;
+  bool _connectionsRequested = false;
+
+  bool get shouldShowCm => !_hideCm || _connectionsRequested;
+
+  Future<void> requestConnectionManager() async {
+    _connectionsRequested = true;
+    notifyListeners();
+    await showCmWindow(requested: true);
+  }
 
   Timer? cmHiddenTimer;
 
@@ -73,6 +80,8 @@ class ServerModel with ChangeNotifier {
   bool get clipboardOk => _clipboardOk;
 
   bool get showElevation => _showElevation;
+
+  bool get hideCm => _hideCm;
 
   int get connectStatus => _connectStatus;
 
@@ -142,7 +151,6 @@ class ServerModel with ChangeNotifier {
     _emptyIdShow = translate("Generating ...");
     _serverId = IDTextEditingController(text: _emptyIdShow);
 
-    /*
     // initital _hideCm at startup
     final verificationMethod =
         bind.mainGetOptionSync(key: kOptionVerificationMethod);
@@ -153,7 +161,6 @@ class ServerModel with ChangeNotifier {
         verificationMethod == kUsePermanentPassword)) {
       _hideCm = false;
     }
-    */
 
     timerCallback() async {
       final connectionStatus =
@@ -166,7 +173,17 @@ class ServerModel with ChangeNotifier {
 
       if (desktopType == DesktopType.cm) {
         if (isWindows) {
-          hideCm = await bind.cmGetConfig(name: kOptionCmVisibleWhenIdle) != 'Y';
+          final oldHide = _hideCm;
+          final mode = await bind.cmGetConfig(name: 'syntrix-cm-hide-on-startup');
+          if (mode == 'Y' || mode == 'N') _hideCm = mode == 'Y';
+          if (!hasWindowsConnection) _connectionsRequested = false;
+          if (hasWindowsConnection &&
+              await bind.cmGetConfig(name: 'syntrix-cm-show-active') == 'Y') {
+            await requestConnectionManager();
+          }
+          if (oldHide != _hideCm) {
+            notifyListeners();
+          }
         }
         final res = await bind.cmCheckClientsLength(length: _clients.length);
         if (res != null) {
@@ -174,7 +191,7 @@ class ServerModel with ChangeNotifier {
           updateClientState(res);
         } else {
           if (_clients.isEmpty) {
-            if (!isWindows || hideCm) {
+            if (!isWindows || _hideCm) {
               await hideCmWindow();
               if (_zeroClientLengthCounter++ == 12) {
                 // 6 seconds
@@ -186,7 +203,7 @@ class ServerModel with ChangeNotifier {
             }
           } else {
             _zeroClientLengthCounter = 0;
-            if (_shouldShowCm) {
+            if (shouldShowCm) {
               showCmWindow();
             } else if (isWindows) {
               hideCmWindow();
@@ -249,17 +266,16 @@ class ServerModel with ChangeNotifier {
         await bind.mainGetOption(key: kOptionVerificationMethod);
     final temporaryPasswordLength =
         await bind.mainGetOption(key: "temporary-password-length");
-    final approveMode = await bind.mainGetOption(key: kOptionApproveMode);
-    final numericOneTimePassword =
-        await mainGetBoolOption(kOptionAllowNumericOneTimePassword);
-    /*
+    final approveMode = await bind.mainGetOption(key: 'approve-mode');
     var hideCm = option2bool(
         'allow-hide-cm', await bind.mainGetOption(key: 'allow-hide-cm'));
     if (!(approveMode == 'password' &&
         verificationMethod == kUsePermanentPassword)) {
       hideCm = false;
     }
-    */
+    if (isWindows && desktopType == DesktopType.cm) {
+      hideCm = await bind.cmGetConfig(name: 'syntrix-cm-hide-on-startup') == 'Y';
+    }
     if (_approveMode != approveMode) {
       _approveMode = approveMode;
       update = true;
@@ -290,15 +306,10 @@ class ServerModel with ChangeNotifier {
       _temporaryPasswordLength = temporaryPasswordLength;
       update = true;
     }
-    if (_allowNumericOneTimePassword != numericOneTimePassword) {
-      _allowNumericOneTimePassword = numericOneTimePassword;
-      update = true;
-    }
-    /*
     if (_hideCm != hideCm) {
       _hideCm = hideCm;
       if (desktopType == DesktopType.cm) {
-        if (hideCm) {
+        if (!shouldShowCm) {
           await hideCmWindow();
         } else {
           await showCmWindow();
@@ -306,7 +317,6 @@ class ServerModel with ChangeNotifier {
       }
       update = true;
     }
-    */
     if (update) {
       notifyListeners();
     }
@@ -538,13 +548,15 @@ class ServerModel with ChangeNotifier {
       }
     }
     if (desktopType == DesktopType.cm) {
-      if (_clients.isEmpty && (!isWindows || hideCm)) {
+      if (_clients.isEmpty && (!isWindows || _hideCm)) {
         hideCmWindow();
-      } else if (_shouldShowCm) {
+      } else if (shouldShowCm) {
         showCmWindow();
       }
     }
-    if (_clients.length != oldClientLenght) {
+    if (isWindows && desktopType == DesktopType.cm) {
+      notifyListeners();
+    } else if (_clients.length != oldClientLenght) {
       notifyListeners();
       if (isAndroid) androidUpdatekeepScreenOn();
     }
@@ -584,7 +596,7 @@ class ServerModel with ChangeNotifier {
         _clients.removeAt(index_disconnected);
         tabController.remove(index_disconnected);
       }
-      if (desktopType == DesktopType.cm && _shouldShowCm) {
+      if (desktopType == DesktopType.cm && shouldShowCm) {
         showCmWindow();
       }
       scrollToBottom();
@@ -604,12 +616,12 @@ class ServerModel with ChangeNotifier {
         onTap: () {},
         page: desktop.buildConnectionCard(client)));
     Future.delayed(Duration.zero, () async {
-      if (_shouldShowCm) windowOnTop(null);
+      if (!_hideCm) windowOnTop(null);
     });
     // Only do the hidden task when on Desktop.
     if (client.authorized && isDesktop && !isWindows) {
       cmHiddenTimer = Timer(const Duration(seconds: 3), () {
-        if (!hideCm) windowManager.minimize();
+        if (!_hideCm) windowManager.minimize();
         cmHiddenTimer = null;
       });
     }
@@ -740,7 +752,7 @@ class ServerModel with ChangeNotifier {
       }
       if (desktopType == DesktopType.cm &&
           _clients.isEmpty &&
-          (!isWindows || hideCm)) {
+          (!isWindows || _hideCm)) {
         hideCmWindow();
       }
       if (isAndroid) androidUpdatekeepScreenOn();
@@ -787,7 +799,9 @@ class ServerModel with ChangeNotifier {
           } else {
             // Has incoming phone call, let's set the window on top.
             Future.delayed(Duration.zero, () {
-              windowOnTop(null);
+              if (!isWindows || desktopType != DesktopType.cm || !_hideCm) {
+                windowOnTop(null);
+              }
             });
           }
         }

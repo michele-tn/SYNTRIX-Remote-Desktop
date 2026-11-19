@@ -160,6 +160,8 @@ pub static ref T: std::collections::HashMap<&'static str, &'static str> =
         ("Accept and Install", "Accetta e installa"),
         ("End-user license agreement", "Contratto di licenza utente finale"),
         ("Generating ...", "Generazione ..."),
+        ("Show active connections", "Mostra connessioni attive"),
+        ("Remote session active", "Sessione remota attiva"),
         ("Your installation is lower version.", "Questa installazione non è aggiornata."),
         ("not_close_tcp_tip", "Non chiudere questa finestra mentre stai usando il tunnel"),
         ("Listening ...", "In ascolto ..."),

@@ -1450,13 +1450,17 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
                 'Hide connection management window when idle',
                 kOptionCmVisibleWhenIdle,
                 reverse: true,
-                enabled: !locked,
+                enabled: !locked &&
+                    model.approveMode == 'password' &&
+                    model.verificationMethod == kUsePermanentPassword,
                 optGetter: () =>
                     bind.mainGetOptionSync(key: kOptionCmVisibleWhenIdle) ==
                     'Y',
                 optSetter: (key, visible) =>
                     bind.mainSetOption(key: key, value: visible ? 'Y' : 'N'),
               ).marginOnly(left: _kContentHSubMargin - 6),
+            if (usePassword)
+              hide_cm(!locked).marginOnly(left: _kContentHSubMargin - 6),
             if (usePassword) radios[2],
           ]);
         })));

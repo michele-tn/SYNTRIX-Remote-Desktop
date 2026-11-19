@@ -85,6 +85,12 @@ fn make_tray() -> hbb_common::ResultType<()> {
         tray_menu.append_items(&[&item])?;
         item
     };
+    #[cfg(windows)]
+    let show_connections_i = {
+        let item = MenuItem::new(translate("Show active connections".to_owned()), false, None);
+        tray_menu.append_items(&[&item])?;
+        item
+    };
     if let Some(quit_i) = &quit_i {
         tray_menu.append_items(&[quit_i])?;
     }
@@ -197,6 +203,16 @@ fn make_tray() -> hbb_common::ResultType<()> {
         }
 
         if let Ok(event) = menu_channel.try_recv() {
+            #[cfg(windows)]
+            if event.id == show_connections_i.id() {
+                std::thread::spawn(|| {
+                    allow_err!(crate::ipc::set_config(
+                        "syntrix-cm-show-active",
+                        "Y".to_owned()
+                    ));
+                });
+                return;
+            }
             if let Some(quit_i) = &quit_i {
                 if event.id == quit_i.id() {
                     /* failed in windows, seems no permission to check system process
@@ -247,7 +263,16 @@ fn make_tray() -> hbb_common::ResultType<()> {
                         if last_click.elapsed() < std::time::Duration::from_secs(1) {
                             return;
                         }
-                        open_func();
+                        if show_connections_i.is_enabled() {
+                            std::thread::spawn(|| {
+                                allow_err!(crate::ipc::set_config(
+                                    "syntrix-cm-show-active",
+                                    "Y".to_owned()
+                                ));
+                            });
+                        } else {
+                            open_func();
+                        }
                         last_click = std::time::Instant::now();
                     }
                 }
@@ -257,6 +282,7 @@ fn make_tray() -> hbb_common::ResultType<()> {
 
         #[cfg(windows)]
         if let Ok(count) = ipc_receiver.try_recv() {
+            show_connections_i.set_enabled(count.unwrap_or(0) > 0);
             session_i.set_text(match count {
                 Some(count) => session_label(count),
                 None => translate("Connecting...".to_owned()),

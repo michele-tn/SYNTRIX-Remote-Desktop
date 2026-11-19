@@ -2870,7 +2870,7 @@ impl Connection {
                     #[cfg(windows)]
                     if !crate::platform::is_prelogin()
                         && !err.to_string().contains(crate::platform::EXPLORER_EXE)
-                        && !crate::hbbs_http::sync::is_pro()
+                        // && !crate::hbbs_http::sync::is_pro()
                     {
                         allow_err!(tx_from_cm_clone.send(Data::CmErr(err.to_string())));
                     }
@@ -6421,7 +6421,10 @@ async fn start_ipc(
         stream = Some(s);
     }
     if stream.is_none() {
-        let args = vec!["--cm"];
+        let mut args = vec!["--cm"];
+        if password::hide_cm() {
+            args.push("--hide");
+        };
         let run_done;
         if crate::platform::is_root() {
             let mut res = Ok(None);

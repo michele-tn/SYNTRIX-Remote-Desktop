@@ -312,6 +312,7 @@ class ChatModel with ChangeNotifier {
 
   var _togglingCMSidePage = false; // protect order for await
   toggleCMSidePage() async {
+    if (isWindows && !gFFI.serverModel.shouldShowCm) return false;
     if (_togglingCMSidePage) return false;
     _togglingCMSidePage = true;
     if (_isShowCMSidePage) {
@@ -402,7 +403,9 @@ class ChatModel with ChangeNotifier {
       showChatIconOverlay();
     }
     // show chat page
-    await showChatPage(messagekey);
+    if (!isWindows || !isConnManager || !session.serverModel.hideCm) {
+      await showChatPage(messagekey);
+    }
     late final ChatUser chatUser;
     if (id == clientModeID) {
       chatUser = ChatUser(
@@ -440,7 +443,9 @@ class ChatModel with ChangeNotifier {
         return;
       }
       if (isDesktop) {
-        windowOnTop(null);
+        if (!isWindows || !isConnManager || !session.serverModel.hideCm) {
+          windowOnTop(null);
+        }
         // disable auto jumpTo other tab when hasFocus, and mark unread message
         final currentSelectedTab =
             session.serverModel.tabController.state.value.selectedTabInfo;

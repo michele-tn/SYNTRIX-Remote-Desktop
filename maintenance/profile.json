@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "variant": "public",
+  "upstream": "rustdesk/rustdesk",
+  "baseCommit": "95cca3f661f635b3cc85c04935fe8d96d8f432ef",
+  "patch": "syntrix.patch",
+  "patchSha256": "09cf82aa8ced529dfd30d6ade1b0115ad4b04f304e261e2f31a8dfc09354d8ed",
+  "bridgeArchive": "bridge-baseline.zip",
+  "bridgeArchiveSha256": "3febf52427f0fd82795393bc9dd84ed782e936dd154ad3031e8651850e1a42a9",
+  "features": [
+    "hwcodec",
+    "vram",
+    "flutter"
+  ],
+  "behavior": "CM hidden during authorized sessions; left tray click opens full CM; no compact session indicator",
+  "patchedFiles": [
+    "flutter/assets/icon.svg",
+    "flutter/lib/consts.dart",
+    "flutter/lib/desktop/pages/desktop_setting_page.dart",
+    "flutter/lib/desktop/pages/server_page.dart",
+    "flutter/lib/main.dart",
+    "flutter/lib/models/chat_model.dart",
+    "flutter/lib/models/server_model.dart",
+    "flutter/windows/runner/Runner.rc",
+    "flutter/windows/runner/resources/app_icon.ico",
+    "flutter/windows/runner/win32_window.cpp",
+    "libs/portable/Cargo.toml",
+    "libs/portable/src/main.rs",
+    "res/icon.ico",
+    "res/tray-icon.ico",
+    "src/hbbs_http/sync.rs",
+    "src/ipc.rs",
+    "src/lang/it.rs",
+    "src/platform/windows.rs",
+    "src/server/connection.rs",
+    "src/tray.rs",
+    "flutter/test/hide_cm_visibility_test.dart"
+  ]
+}
