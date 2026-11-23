@@ -1,0 +1,4 @@
+*.patch -text
+*.exe binary
+*.zip binary
+*.sha3-256 text eol=lf

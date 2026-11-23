@@ -1,0 +1,21 @@
+{
+  "artifact": "SYNTRIX-1.5.3-x64-portable.exe",
+  "variant": "public",
+  "version": "1.5.3",
+  "architecture": "x64",
+  "bytes": 27860992,
+  "sha256": "bf751bfdcc49a505789e9d8f02ad92f313bc09788e131fdcdf9067a24d9b9d61",
+  "sha3_256": "e3b55f7ae7688707ab02cf77528d748d62848ac3dcdb874ef9a0fbff39f905e0",
+  "verifiedPayloadFiles": 91,
+  "runnerSha256": "e23c426d644f65fe3509291c6f7b377a14b433ec4e2982d1449bed1232b2cba4",
+  "nativeLibrarySha256": "68e578bee0fa79dad4dbb196ebdc868e4144d153eabaf69b0fb6443b14b55ad4",
+  "flutterAotSha256": "cacbde76f40d993c3b5ed8c666a71478b98fa55539ca93b51ecf6ac313256935",
+  "nativeFeatures": "hwcodec,vram,flutter",
+  "sharedNativeBuild": true,
+  "publicDiagnosticPathsNormalized": true,
+  "manualRemoteSessionTested": false,
+  "cmVisibilityRegressionTestsPassed": 3,
+  "compactSessionIndicatorRemoved": true,
+  "regressionReproducedBeforeFix": true,
+  "regressionSurface": "server_page.dart: compact session widget removed; main.dart: CM startup/show/hide; server_model.dart: session events and tray request state; chat_model.dart: incoming message visibility; tray.rs: left click opens active CM; ipc.rs: hide_cm and idle preference share consistent CM config"
+}
